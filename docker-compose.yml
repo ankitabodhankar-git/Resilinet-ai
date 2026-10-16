@@ -1,0 +1,41 @@
+services:
+  falkordb:
+    # Official FalkorDB development image; version checked against Docker Hub.
+    image: falkordb/falkordb:v4.22.0
+    ports:
+      - "127.0.0.1:${FALKORDB_PORT:-6379}:6379"
+    environment:
+      REDIS_ARGS: "--appendonly yes"
+    volumes:
+      - falkordb_data:/var/lib/falkordb/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  api:
+    profiles: ["containerized-api"]
+    build: .
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      FALKORDB_HOST: falkordb
+      FALKORDB_PORT: 6379
+      FALKORDB_GRAPH: ${FALKORDB_GRAPH:-resilinet}
+    ports:
+      - "127.0.0.1:${API_PORT:-8000}:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  falkordb_data:

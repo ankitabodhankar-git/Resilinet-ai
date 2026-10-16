@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FAF9F6">
+  <title>ResiliNet AI — Supply Chain Recovery Intelligence</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #FAF9F6;
+      --surface: #FFFFFF;
+      --teal: #0F766E;
+      --sage: #84A98C;
+      --mint: #E8F3EE;
+      --text: #292F36;
+      --muted: #747C85;
+      --border: #E7E3DA;
+      --success: #3F7D5A;
+      --warning: #B7791F;
+      --critical: #B54747;
+      --shadow: 0 2px 10px rgb(41 47 54 / 4%);
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--page); color: var(--text); font: 14px/1.5 Inter, "Segoe UI", system-ui, sans-serif; }
+    button, input { font: inherit; }
+    button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid var(--sage); outline-offset: 3px; }
+    .topbar { height: 66px; padding: 0 max(24px, calc((100vw - 1200px) / 2)); background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; letter-spacing: -.02em; font-size: 16px; }
+    .brand-mark { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; color: #fff; background: var(--teal); font-size: 14px; }
+    .brand small { color: var(--muted); font-weight: 500; }
+    .demo-badge { padding: 5px 10px; border-radius: 99px; background: var(--mint); color: #35694c; font-size: 11px; font-weight: 650; letter-spacing: .02em; }
+    main { max-width: 1200px; margin: 0 auto; padding: 28px 24px 48px; }
+    .heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 21px; }
+    h1 { margin: 0 0 5px; font-size: clamp(23px, 3vw, 30px); line-height: 1.2; letter-spacing: -.035em; font-weight: 680; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 13px; }
+    .api-link { color: var(--teal); font-size: 12px; font-weight: 650; text-decoration: none; white-space: nowrap; }
+    body[data-docs-enabled="false"] .api-link { display: none; }
+    .workflow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 18px; }
+    .step { display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--muted); font-size: 12px; }
+    .step.active { border-color: #b5ceba; background: var(--mint); color: #355f47; }
+    .step-number { width: 25px; height: 25px; flex: 0 0 25px; border-radius: 50%; display: grid; place-items: center; background: #f1f0ec; color: #626b72; font-size: 11px; font-weight: 700; }
+    .step.active .step-number { background: var(--sage); color: #fff; }
+    .step-label { font-weight: 650; color: var(--text); display: block; }
+    .step.active .step-label { color: #355f47; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .setup { padding: 15px 17px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+    .setup-copy strong { display: block; font-size: 13px; margin-bottom: 2px; }
+    .setup-copy span { color: var(--muted); font-size: 12px; }
+    .setup-actions, .analyze-form { display: flex; align-items: center; gap: 9px; }
+    .button { border: 1px solid transparent; border-radius: 7px; min-height: 36px; padding: 8px 13px; background: var(--teal); color: #fff; font-size: 12px; font-weight: 650; cursor: pointer; transition: background .15s ease; }
+    .button:hover { background: #0b625c; }
+    .button.secondary { background: var(--surface); color: var(--teal); border-color: #bfd3cd; }
+    .button.secondary:hover { background: var(--mint); }
+    .button:disabled { cursor: wait; opacity: .58; }
+    .statusline { min-height: 18px; margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+    .statusline.error { color: var(--critical); }
+    .scenario { padding: 16px 17px; margin-bottom: 16px; }
+    .scenario-top { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+    .section-title { margin: 0; font-size: 14px; font-weight: 680; }
+    label { font-size: 12px; color: var(--muted); }
+    input { width: 160px; height: 36px; border: 1px solid var(--border); border-radius: 7px; padding: 0 10px; background: #fff; color: var(--text); }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    .metric { padding: 15px 17px; }
+    .metric-label { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .045em; text-transform: uppercase; }
+    .metric-value { margin-top: 4px; font-size: 24px; line-height: 1.2; font-weight: 680; letter-spacing: -.035em; }
+    .metric-note { margin-top: 3px; font-size: 11px; color: var(--muted); }
+    .content-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr); gap: 14px; align-items: start; }
+    .section-card { padding: 17px; min-width: 0; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .section-head h2 { margin: 0; font-size: 13px; font-weight: 680; }
+    .count { color: var(--muted); font-size: 11px; }
+    .empty { padding: 23px 14px; border: 1px dashed var(--border); border-radius: 8px; color: var(--muted); text-align: center; font-size: 12px; }
+    .path-list { display: grid; gap: 8px; }
+    .path-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 10px 11px; border-radius: 7px; background: #fafbf9; border: 1px solid #edf0eb; font-size: 11px; }
+    .node { color: var(--text); font-weight: 600; }
+    .node-type { display: block; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+    .arrow { color: var(--sage); font-size: 14px; padding: 0 1px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
+    th { padding: 8px 7px; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 9px; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+    td { padding: 10px 7px; border-bottom: 1px solid #f0eee9; vertical-align: middle; }
+    tr:last-child td { border-bottom: 0; }
+    .supplier-name { font-weight: 620; color: var(--text); }
+    .subcell { display: block; color: var(--muted); font-size: 10px; margin-top: 2px; }
+    .badge { display: inline-flex; align-items: center; border-radius: 99px; padding: 3px 7px; font-size: 9px; font-weight: 700; letter-spacing: .035em; white-space: nowrap; }
+    .badge.success { color: var(--success); background: #e9f3ec; }
+    .badge.fail { color: var(--critical); background: #faecea; }
+    .badge.unknown { color: var(--warning); background: #fbf2df; }
+    .proof { grid-column: 1 / -1; }
+    .proof-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(240px, .85fr); gap: 18px; }
+    .decision { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+    .decision-label { color: var(--muted); font-size: 11px; }
+    .check-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+    .check { border: 1px solid var(--border); border-radius: 7px; padding: 9px 10px; min-width: 0; }
+    .check-head { display: flex; align-items: center; justify-content: space-between; gap: 7px; font-size: 10px; font-weight: 650; text-transform: capitalize; }
+    .check-reason { margin-top: 5px; color: var(--muted); font-size: 10px; }
+    .proof-aside { border-left: 1px solid var(--border); padding-left: 17px; }
+    .proof-aside h3 { margin: 0 0 6px; font-size: 11px; }
+    .proof-aside p, .proof-aside li { color: var(--muted); font-size: 10px; }
+    .proof-aside ul { margin: 5px 0 12px; padding-left: 17px; }
+    .proof-aside li + li { margin-top: 4px; }
+    .footnote { margin: 16px 2px 0; color: var(--muted); font-size: 10px; }
+    [hidden] { display: none !important; }
+    @media (max-width: 760px) { .topbar { padding: 0 18px; } main { padding: 23px 16px 36px; } .workflow { grid-template-columns: repeat(2, 1fr); } .content-grid { grid-template-columns: 1fr; } .proof { grid-column: auto; } .heading { align-items: start; } .proof-grid { grid-template-columns: 1fr; } .proof-aside { border-left: 0; border-top: 1px solid var(--border); padding: 14px 0 0; } }
+    @media (max-width: 520px) { .heading { display: block; } .api-link { display: inline-block; margin-top: 9px; } .setup, .scenario-top { align-items: stretch; flex-direction: column; } .setup-actions { align-items: start; flex-direction: column; } .analyze-form { flex-wrap: wrap; } input { flex: 1; min-width: 120px; } .summary-grid { gap: 7px; } .metric { padding: 12px; } .metric-value { font-size: 20px; } .metric-note { display: none; } .check-list { grid-template-columns: 1fr; } .demo-badge { font-size: 9px; padding: 4px 7px; } }
+  </style>
+</head>
+<body data-docs-enabled="__DOCS_ENABLED__">
+  <nav class="topbar" aria-label="Main navigation">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">R</span><span>ResiliNet <small>AI</small></span></div>
+    <span class="demo-badge">SYNTHETIC DEMO</span>
+  </nav>
+  <main>
+    <section class="heading">
+      <div><h1>Supply Chain Recovery Intelligence</h1><p class="subtitle">Trace disruption impact across connected suppliers, components, factories and products.</p></div>
+      <a class="api-link" href="/docs">API documentation ↗</a>
+    </section>
+    <section class="workflow" aria-label="Analysis workflow">
+      <div class="step active" id="step1"><span class="step-number">1</span><span><span class="step-label">Prepare demo data</span>Graph records</span></div>
+      <div class="step" id="step2"><span class="step-number">2</span><span><span class="step-label">Select supplier</span>Disruption input</span></div>
+      <div class="step" id="step3"><span class="step-number">3</span><span><span class="step-label">Analyze disruption</span>Dependency paths</span></div>
+      <div class="step" id="step4"><span class="step-number">4</span><span><span class="step-label">Review decision</span>Evidence proof</span></div>
+    </section>
+    <section class="card setup" aria-labelledby="setupTitle">
+      <div class="setup-copy"><strong id="setupTitle">Prepare the synthetic graph</strong><span>Add or update the labelled demo records in FalkorDB. Existing graph data is preserved.</span><p id="seedStatus" class="statusline" aria-live="polite"></p></div>
+      <div class="setup-actions"><button class="button" id="seed">Initialize demo data</button></div>
+    </section>
+    <section class="card scenario" aria-labelledby="scenarioTitle">
+      <div class="scenario-top"><h2 class="section-title" id="scenarioTitle">Disruption scenario</h2>
+        <form class="analyze-form" id="analysisForm"><label for="supplier">Disrupted supplier ID</label><input id="supplier" name="supplier" value="SUP-001" maxlength="32" required pattern="[A-Z0-9][A-Z0-9_-]*"><button class="button secondary" id="analyze" type="submit">Analyze disruption</button></form>
+      </div>
+      <p id="status" class="statusline" aria-live="polite">Initialize demo data, then analyze a supplier to load graph evidence.</p>
+    </section>
+    <section class="summary-grid" aria-label="Scenario summary" id="summary" hidden>
+      <article class="card metric"><div class="metric-label">Affected products</div><div class="metric-value" id="affectedCount">—</div><div class="metric-note">Distinct products on recorded paths</div></article>
+      <article class="card metric"><div class="metric-label">Candidate alternatives</div><div class="metric-value" id="candidateCount">—</div><div class="metric-note">Suppliers with matching graph edges</div></article>
+      <article class="card metric"><div class="metric-label">Decision status</div><div class="metric-value" id="decisionValue">—</div><div class="metric-note" id="decisionNote">Based on available graph evidence</div></article>
+    </section>
+    <section class="content-grid">
+      <article class="card section-card" aria-labelledby="pathsTitle">
+        <div class="section-head"><h2 id="pathsTitle">Affected supply-chain paths</h2><span class="count" id="pathsCount">Awaiting analysis</span></div>
+        <div class="empty" id="pathsEmpty">Run an analysis to see verified Supplier → Component → Factory → Product paths.</div>
+        <div class="path-list" id="pathList"></div>
+      </article>
+      <article class="card section-card" aria-labelledby="candidatesTitle">
+        <div class="section-head"><h2 id="candidatesTitle">Alternative suppliers</h2><span class="count" id="candidateCountLabel">—</span></div>
+        <div class="empty" id="candidateEmpty">Candidate comparison appears after scenario analysis.</div>
+        <div class="table-wrap" id="candidateTable" hidden><table><thead><tr><th>Supplier</th><th>Component</th><th>Eligibility</th><th>Score</th></tr></thead><tbody id="candidateRows"></tbody></table></div>
+      </article>
+      <article class="card section-card proof" aria-labelledby="proofTitle">
+        <div class="section-head"><h2 id="proofTitle">Recovery Decision Proof</h2><span class="count" id="rankingMethod"></span></div>
+        <div class="empty" id="proofEmpty">Decision checks, ranking and evidence gaps will appear here.</div>
+        <div class="proof-grid" id="proofContent" hidden>
+          <div><div class="decision"><span class="decision-label">Scenario outcome</span><span id="outcomeBadge" class="badge"></span></div><div class="check-list" id="checkList"></div></div>
+          <aside class="proof-aside"><h3>Recommendation &amp; evidence</h3><div id="recommendationList"></div><h3 id="rejectionTitle" hidden>Rejection reasons</h3><ul id="rejectionList"></ul><h3 id="missingTitle" hidden>Missing information</h3><ul id="missingList"></ul></aside>
+        </div>
+      </article>
+    </section>
+    <p class="footnote">Synthetic demonstration records only. Decisions use deterministic checks over FalkorDB graph data; this prototype does not provide operational procurement advice.</p>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const setText = (id, value) => { $(id).textContent = value; };
+    async function call(url, options) {
+      let response;
+      try {
+        response = await fetch(url, options);
+      } catch (error) {
+        if (error instanceof TypeError) {
+          throw new Error(`API connection failed from ${window.location.origin}. Open this dashboard at http://127.0.0.1:8000/ so it shares the FastAPI origin, and confirm Uvicorn is running.`);
+        }
+        throw error;
+      }
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.detail || `Request failed (${response.status})`);
+      return body;
+    }
+    function badge(text, kind) { const el = document.createElement("span"); el.className = `badge ${kind}`; el.textContent = text; return el; }
+    function listItems(target, items) { const list = $(target); list.replaceChildren(); for (const item of items) { const li = document.createElement("li"); li.textContent = item; list.append(li); } }
+    function setStep(active) { for (let i = 1; i <= 4; i++) $(`step${i}`).classList.toggle("active", i <= active); }
+    $("seed").addEventListener("click", async () => {
+      const button = $("seed"); button.disabled = true; setStep(1); $("seedStatus").classList.remove("error"); setText("seedStatus", "Preparing synthetic graph records…");
+      try { const data = await call("/demo/initialize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm_synthetic: true }) }); setText("seedStatus", `Ready · ${data.suppliers} suppliers, ${data.components} components, ${data.relationships} relationships.`); setStep(2); }
+      catch (error) { setText("seedStatus", error.message); $("seedStatus").classList.add("error"); }
+      finally { button.disabled = false; }
+    });
+    $("analysisForm").addEventListener("submit", async (event) => {
+      event.preventDefault(); const button = $("analyze"); button.disabled = true; setStep(3); $("status").classList.remove("error"); setText("status", "Querying FalkorDB dependency paths and evaluating recorded alternatives…");
+      $("summary").hidden = true; $("proofContent").hidden = true; $("proofEmpty").hidden = false; $("candidateTable").hidden = true; $("candidateEmpty").hidden = false; $("pathList").replaceChildren(); $("pathsEmpty").hidden = false; setText("pathsEmpty", "Loading graph evidence…");
+      try { const data = await call("/recovery/scenarios", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ disrupted_supplier_id: $("supplier").value.trim() }) }); render(data); setStep(4); $("status").classList.remove("error"); setText("status", `Analysis complete · ${data.affected_paths.length} evidence path(s) returned from the graph.`); }
+      catch (error) { setText("status", error.message); $("status").classList.add("error"); setText("pathsEmpty", "No evidence paths available. Confirm the graph is initialized and reachable."); }
+      finally { button.disabled = false; }
+    });
+    function render(data) {
+      const products = new Set(data.affected_paths.map(path => path.find(node => node.type === "Product")?.id).filter(Boolean));
+      setText("affectedCount", String(products.size)); setText("candidateCount", String(data.candidate_evaluations.length)); setText("decisionValue", data.outcome.replaceAll("_", " ")); setText("decisionNote", data.recommendations.length ? `${data.recommendations.length} component recommendation(s)` : "No unsupported recommendation issued"); $("summary").hidden = false;
+      setText("pathsCount", `${data.affected_paths.length} recorded path(s)`); $("pathList").replaceChildren(); $("pathsEmpty").hidden = data.affected_paths.length > 0;
+      for (const path of data.affected_paths) { const row = document.createElement("div"); row.className = "path-row"; path.forEach((node, index) => { if (index) { const arrow = document.createElement("span"); arrow.className = "arrow"; arrow.textContent = "→"; row.append(arrow); } const item = document.createElement("span"); item.className = "node"; const type = document.createElement("span"); type.className = "node-type"; type.textContent = node.type; item.append(type, document.createTextNode(node.name)); row.append(item); }); $("pathList").append(row); }
+      setText("candidateCountLabel", `${data.candidate_evaluations.length} candidate(s)`); $("candidateRows").replaceChildren(); $("candidateEmpty").hidden = data.candidate_evaluations.length > 0; $("candidateTable").hidden = data.candidate_evaluations.length === 0;
+      for (const candidate of data.candidate_evaluations) { const tr = document.createElement("tr"); const supplier = document.createElement("td"); const name = document.createElement("span"); name.className = "supplier-name"; name.textContent = candidate.supplier_name; const id = document.createElement("span"); id.className = "subcell"; id.textContent = candidate.supplier_id; supplier.append(name, id); const component = document.createElement("td"); component.textContent = candidate.component_name; const state = document.createElement("td"); state.append(badge(candidate.eligible === true ? "ELIGIBLE" : candidate.eligible === false ? "REJECTED" : "UNKNOWN", candidate.eligible === true ? "success" : candidate.eligible === false ? "fail" : "unknown")); const score = document.createElement("td"); score.textContent = candidate.score == null ? "—" : String(candidate.score); tr.append(supplier, component, state, score); $("candidateRows").append(tr); }
+      const outcomeKind = data.outcome === "RECOMMENDED" ? "success" : data.outcome === "INSUFFICIENT_EVIDENCE" ? "unknown" : "fail"; const outcome = badge(data.outcome.replaceAll("_", " "), outcomeKind); outcome.id = "outcomeBadge"; $("outcomeBadge").replaceWith(outcome);
+      $("checkList").replaceChildren(); for (const candidate of data.candidate_evaluations) for (const check of candidate.checks) { const article = document.createElement("div"); article.className = "check"; const head = document.createElement("div"); head.className = "check-head"; const label = document.createElement("span"); label.textContent = `${candidate.supplier_id} · ${check.constraint.replaceAll("_", " ")}`; head.append(label, badge(check.status, check.status === "PASS" ? "success" : check.status === "FAIL" ? "fail" : "unknown")); const reason = document.createElement("div"); reason.className = "check-reason"; reason.textContent = check.reason; article.append(head, reason); $("checkList").append(article); }
+      $("recommendationList").replaceChildren(); if (data.recommendations.length) { for (const rec of data.recommendations) { const p = document.createElement("p"); p.textContent = `${rec.supplier_name} for ${rec.component_name} · score ${rec.score}`; $("recommendationList").append(p); } } else { const p = document.createElement("p"); p.textContent = "No recovery recommendation was made from the available evidence."; $("recommendationList").append(p); }
+      const rejections = data.candidate_evaluations.flatMap(c => c.rejection_reasons.map(reason => `${c.supplier_id}: ${reason}`)); $("rejectionTitle").hidden = !rejections.length; $("rejectionList").replaceChildren(); $("rejectionList").hidden = !rejections.length; for (const r of rejections) { const li = document.createElement("li"); li.textContent = r; $("rejectionList").append(li); }
+      $("missingTitle").hidden = !data.missing_information.length; $("missingList").hidden = !data.missing_information.length; listItems("missingList", data.missing_information); setText("rankingMethod", data.ranking_method || "Deterministic constraint evaluation"); $("proofEmpty").hidden = true; $("proofContent").hidden = false;
+    }
+  </script>
+</body>
+</html>
