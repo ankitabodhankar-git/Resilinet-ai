@@ -129,7 +129,7 @@ docker compose --profile containerized-api ps
 docker compose --profile containerized-api logs api
 ```
 
-Inside Compose, the API uses `FALKORDB_HOST=falkordb`; the host-published API and FalkorDB ports are loopback-only. To use another host API port, set `$env:API_PORT='8001'` before `up`. The optional containerized path was added and its Compose configuration validated; this machine’s already-running host API occupies port 8000, so the Compose API image has not been built or launched here.
+Inside Compose, the API uses `FALKORDB_HOST=falkordb`; the host-published API and FalkorDB ports are loopback-only. To use another host API port, set `$env:API_PORT='8001'` before `up`. The optional API image and Compose profile were built and smoke-tested on `127.0.0.1:8001` while the existing host API remained on port 8000. The container returned healthy, initialized the synthetic graph, and completed a recovery request through `FALKORDB_HOST=falkordb`. The temporary API container was stopped after the check; the existing FalkorDB container and named volume remain running.
 
 Stop services without deleting data:
 
@@ -213,7 +213,7 @@ Record this from the running application and real database. Do not use a static 
 - [x] Complete local setup instructions verified; no live deployment is claimed.
 - [x] Selected track documented: **Agents That Act on Connected Data**.
 - [x] AI coding assistant usage disclosed below.
-- [ ] Public source-code repository — local Git commit prepared; GitHub remote/repository not created.
+- [ ] Public source-code repository — local commit created; GitHub remote/repository not created.
 - [ ] Demo video — script prepared; recording not yet created.
 - [ ] Submission form — submit repository URL, video URL, and selected track before the hackathon deadline.
 
