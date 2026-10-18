@@ -113,6 +113,21 @@ def test_invalid_numeric_candidate_data_never_passes(field, value):
     assert result["candidate_evaluations"][0]["eligible"] is None
 
 
+@pytest.mark.parametrize(
+    ("field", "value", "constraint"),
+    [("lead", 31, "lead_time"), ("risk", 0.8, "risk_score")],
+)
+def test_candidate_over_demo_threshold_is_rejected(field, value, constraint):
+    values = {"capacity": 300, "lead": 12, "risk": 0.2}
+    values[field] = value
+    result = analyze_recovery(ScenarioGraph(candidates=[candidate(**values)]), "SUP-001")
+
+    evaluation = result["candidate_evaluations"][0]
+    assert result["outcome"] == "NO_VIABLE_ALTERNATIVE"
+    assert evaluation["eligible"] is False
+    assert next(check for check in evaluation["checks"] if check["constraint"] == constraint)["status"] == "FAIL"
+
+
 def test_invalid_required_units_are_treated_as_missing_evidence():
     result = analyze_recovery(
         ScenarioGraph(impacts=[impact_row(required_units="120")]), "SUP-001"

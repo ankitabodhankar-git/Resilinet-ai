@@ -31,7 +31,7 @@ def test_get_graph_uses_official_client_configuration(monkeypatch):
         falkordb_host="db.local",
         falkordb_port=6380,
         falkordb_username="demo-user",
-        falkordb_password="demo-password",
+        falkordb_password="unit-test-placeholder",
         falkordb_graph="unit_test",
     )
 
@@ -42,7 +42,7 @@ def test_get_graph_uses_official_client_configuration(monkeypatch):
         "host": "db.local",
         "port": 6380,
         "username": "demo-user",
-        "password": "demo-password",
+        "password": "unit-test-placeholder",
         "graph_name": "unit_test",
     }
 
