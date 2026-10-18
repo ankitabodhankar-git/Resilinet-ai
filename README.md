@@ -145,3 +145,6 @@ finally { Remove-Item Env:RUN_FALKORDB_INTEGRATION -ErrorAction SilentlyContinue
 - All supplied graph records are synthetic and illustrative.
 - Eligibility thresholds and ranking formula are demo rules, not validated procurement policy.
 
+## AI-Assistance Disclosure
+
+OpenAI Codex assisted with implementation, testing, and documentation. The project owner is responsible for reviewing and understanding the submitted code.
