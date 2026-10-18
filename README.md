@@ -89,81 +89,33 @@ For each disrupted component, demand is summed once per affected factory from th
 
 The demonstration score is `100 - lead_time_days - (10 × risk_score)`. Higher scores rank first; ties use ascending supplier ID. These thresholds and scores are illustrative, not validated industry standards. If missing evidence prevents choosing an eligible alternative, the outcome is `INSUFFICIENT_EVIDENCE`; if all available alternatives fail, it is `NO_VIABLE_ALTERNATIVE`. Unknown IDs return `UNKNOWN_SUPPLIER`.
 
-## Local setup and run (Windows PowerShell)
 
-Requirements: Docker Desktop with engine running and Python 3.12 or newer. Run commands from the project directory. The existing `.venv` can be reused.
 
-```powershell
-if (!(Test-Path .venv)) { py -3.12 -m venv .venv }
-if (!(Test-Path .env)) { Copy-Item .env.example .env }
-```
+Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/). 
 
-For a fresh environment, install the project-local dependencies (this does not install them globally):
+## How to Run Locally
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
-```
+Requirements: Python and Docker Desktop.
 
-Start or check FalkorDB. The pinned official image is `falkordb/falkordb:v4.22.0`; host port 6379 is bound to loopback and the named volume persists data.
+Start FalkorDB: docker compose up -d falkordb
 
-```powershell
-docker compose up -d falkordb
-docker compose ps
-docker compose exec falkordb redis-cli ping
-```
+Start the API using the project's virtual environment.
 
-Start the API in another terminal. The Windows-host process uses `localhost` from `.env`/settings, while the optional Compose API uses the `falkordb` service hostname.
+Open http://127.0.0.1:8000/
 
-```powershell
-.\.venv\Scripts\python.exe -m uvicorn resilinet.main:app --app-dir src --reload --host 127.0.0.1 --port 8000
-```
+Check http://127.0.0.1:8000/health
 
-Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/). Do not open `src/resilinet/static/index.html` directly from File Explorer: API calls require a same-origin FastAPI page. If opened as a file, the dashboard now shows a link to the served page and disables API actions. Check readiness at [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health). `{"status":"ok","graph":"connected"}` means the configured graph answered the readiness query.
+## Key Features
 
-### Optional containerized API
+Graph-based supplier impact analysis
 
-The API container is behind the `containerized-api` profile so ordinary local development remains unchanged. Stop the host Uvicorn process with Ctrl+C before binding its default port 8000 from Docker. Then run:
+Interactive supply-chain relationship visualization
 
-```powershell
-docker compose --profile containerized-api up -d --build
-docker compose --profile containerized-api ps
-docker compose --profile containerized-api logs api
-```
+Alternative supplier evaluation
 
-Inside Compose, the API uses `FALKORDB_HOST=falkordb`; the host-published API and FalkorDB ports are loopback-only. The containerized API was built and verified on `127.0.0.1:8000`, including health, synthetic graph initialization, impact analysis, and recovery requests. To use another host API port, set `$env:API_PORT='8001'` before `up`; the API still listens on port 8000 inside Compose.
+Recovery decision proof with PASS, FAIL, and UNKNOWN checks
 
-Stop services without deleting data:
-
-```powershell
-docker compose --profile containerized-api stop api falkordb
-```
-
-Do not use `docker compose down -v` for this project; it deletes the persistent data volume.
-
-## API examples
-
-Initialize synthetic records (repeatable):
-
-```powershell
-Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:8000/demo/initialize' `
-  -ContentType 'application/json' -Body '{"confirm_synthetic":true}'
-```
-
-Trace supplier impact:
-
-```powershell
-Invoke-RestMethod -Uri 'http://127.0.0.1:8000/suppliers/SUP-001/impact'
-```
-
-Evaluate a recovery scenario:
-
-```powershell
-Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:8000/recovery/scenarios' `
-  -ContentType 'application/json' -Body '{"disrupted_supplier_id":"SUP-001"}'
-```
-
-The response includes `outcome`, `affected_paths`, candidate `checks`, `rejection_reasons`, `missing_information`, `recommendations`, and the `ranking_method`. Invalid IDs return 422; graph unavailability returns a generic 503 without exposing connection details. `/docs` and `/openapi.json` are available in development. With `APP_ENV=production`, those documentation routes and the dashboard’s docs link are disabled. This is not authentication or authorization; do not expose the development service publicly.
-
+Synthetic demo data and deterministic evaluation
 ## Tests
 
 Use the project virtual environment. Unit tests use controlled graph fakes and need no running database:
@@ -180,11 +132,6 @@ try { .\.venv\Scripts\python.exe -m pytest -q -m integration }
 finally { Remove-Item Env:RUN_FALKORDB_INTEGRATION -ErrorAction SilentlyContinue }
 ```
 
-The API service currently uses `127.0.0.1:8000` in the containerized setup, and FalkorDB is on loopback port 6379. The dashboard root and API requests share the same origin; no CORS exception is needed. See [the compliance audit](docs/competition-compliance.md) for verification and remaining submission requirements.
-
-## Configuration and secret handling
-
-Settings come from environment variables or the ignored local `.env`: `APP_ENV`, `FALKORDB_HOST`, `FALKORDB_PORT`, `FALKORDB_USERNAME`, `FALKORDB_PASSWORD`, and `FALKORDB_GRAPH`. `.env.example` contains only empty optional credential fields and safe local defaults. `.gitignore` keeps `.env`, virtual environments, caches, build outputs, and egg metadata out of Git while allowing `.env.example` to be committed. No real credentials are required by the local demo.
 
 ## Reproducible demo walkthrough
 
@@ -193,38 +140,10 @@ Settings come from environment variables or the ignored local `.env`: `APP_ENV`,
 3. Select disrupted supplier `SUP-001` and analyze. The app queries the real graph for Supplier → Component → Factory → Product dependency paths. Inspect the interactive graph, select nodes to highlight connections, and adjust zoom; the textual evidence paths remain available below it.
 4. Compare the recorded alternatives. Show `SUP-002`’s passing qualification, capacity, lead-time, risk, and compatibility checks; point out that missing `SUP-003` fields remain UNKNOWN.
 5. Review the Recovery Decision Proof and explain the ranking formula and tie-breaker.
-6. In `/docs` or FalkorDB Browser, show the fixed Cypher path query. Explain that FalkorDB determines which entities and compatible alternatives exist; the recovery evaluator cannot recommend a supplier without those graph edges.
 
-## Demo video script (about 2 minutes 40 seconds)
-
-- **0:00–0:15 — Problem:** “When a supplier is disrupted, teams need to see which products depend on it and whether an alternative is supported by evidence.”
-- **0:15–0:35 — Product:** Show the real dashboard and identify the synthetic-data badge and four-step workflow.
-- **0:35–0:50 — Initialize:** Click **Initialize demo data** and show the API’s returned seed counts.
-- **0:50–1:20 — Disruption:** Analyze `SUP-001`. Trace one real returned path from supplier through component and factory to product; show all affected products.
-- **1:20–1:50 — Alternatives:** Compare candidate rows. Show `SUP-002` as eligible and `SUP-003` as UNKNOWN because its required values are missing.
-- **1:50–2:20 — Proof:** Walk through the qualification, capacity, lead-time, risk, and graph-compatibility checks, then explain the ranking and missing-information section.
-- **2:20–2:40 — Graph centrality:** Show the fixed Cypher query in `/docs` or FalkorDB Browser. State that graph relationships supply impact evidence and alternative compatibility; no mock response or generated Cypher is used.
-
-Record this from the running application and real database. Do not use a static mockup or imply the synthetic values are real-world sourcing data.
-
-## Submission readiness checklist
-
-- [x] Existing application and graph workflow preserved; no database reset.
-- [x] README documents setup, graph model, Cypher, architecture, limitations, and demo.
-- [x] Complete local setup instructions verified; no live deployment is claimed.
-- [x] Target track documented: **Track 01 — Agents That Act on Connected Data**.
-- [x] Interactive graph visualization renders graph-derived paths and alternatives from the recovery API.
-- [x] AI coding assistant usage disclosed below.
-- [ ] Public source-code repository updated with the project — the GitHub repository exists; its initial commit is joined to local history, but the project commits have not been pushed.
-- [ ] Demo video — script prepared; recording not yet created.
-- [ ] Submission form — submit repository URL, video URL, and selected track before the hackathon deadline.
-
-**AI coding assistant disclosure:** OpenAI Codex assisted with implementation, testing, and documentation. The project owner should review the source and is responsible for the final submission.
 
 ## Limitations
 
 - All supplied graph records are synthetic and illustrative.
 - Eligibility thresholds and ranking formula are demo rules, not validated procurement policy.
-- There is no authentication, authorization, production deployment, external supplier data feed, LLM, or automatic recovery execution.
-- Hiding API docs in production mode does not secure the API. Add a reviewed authentication and deployment design before any public exposure.
-- Hackathon deadline supplied by the project owner: October 18, 2026, 11:59 PM IST.
+
