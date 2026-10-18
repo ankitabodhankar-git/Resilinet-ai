@@ -37,6 +37,10 @@
     .subtitle { margin: 0; color: var(--muted); font-size: 13px; }
     .api-link { color: var(--teal); font-size: 12px; font-weight: 650; text-decoration: none; white-space: nowrap; }
     body[data-docs-enabled="false"] .api-link { display: none; }
+    .origin-notice { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 16px; margin: 0 0 16px; border: 1px solid #d7c391; border-radius: var(--radius); background: #fff9e9; color: var(--text); }
+    .origin-notice strong { display: block; font-size: 13px; }
+    .origin-notice p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+    .origin-notice a { flex: 0 0 auto; color: var(--teal); font-weight: 700; }
     .workflow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 18px; }
     .step { display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--muted); font-size: 12px; }
     .step.active { border-color: #b5ceba; background: var(--mint); color: #355f47; }
@@ -73,6 +77,31 @@
     .count { color: var(--muted); font-size: 11px; }
     .empty { padding: 23px 14px; border: 1px dashed var(--border); border-radius: 8px; color: var(--muted); text-align: center; font-size: 12px; }
     .path-list { display: grid; gap: 8px; }
+    .graph-toolbar { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; }
+    .graph-toolbar button { border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; background: #fff; color: var(--text); cursor: pointer; }
+    .graph-zoom { width: 120px; height: auto; padding: 0; }
+    .graph-legend { display: flex; flex-wrap: wrap; gap: 10px; margin: 9px 0 0; color: var(--muted); font-size: 10px; }
+    .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--sage); }
+    .legend-dot.disrupted { background: #b85b4b; }
+    .legend-dot.alternative { background: #638d72; }
+    .graph-canvas { width: 100%; min-height: 280px; overflow: hidden; border: 1px solid #edf0eb; border-radius: 8px; background: radial-gradient(#e8ece6 1px, transparent 1px) 0 0 / 18px 18px, #fbfcfa; }
+    .graph-canvas svg { display: block; width: 100%; height: 340px; touch-action: pan-y; }
+    .graph-edge { stroke: #a7b4a5; stroke-width: 2; marker-end: url(#arrow); }
+    .graph-edge.alternative { stroke: #638d72; stroke-dasharray: 5 4; }
+    .graph-edge-label { fill: #58645a; stroke: #fbfcfa; stroke-width: 4px; paint-order: stroke; text-anchor: middle; font-size: 9px; font-weight: 700; letter-spacing: .03em; pointer-events: none; }
+    .graph-edge-label.alternative { fill: #477253; }
+    .graph-edge.is-dim, .graph-node.is-dim { opacity: .14; }
+    .graph-node { cursor: pointer; transition: opacity .15s ease; }
+    .graph-node rect { fill: #fff; stroke: #d9e0d6; stroke-width: 1.4; rx: 9; }
+    .graph-node.supplier rect { fill: #f4f7f2; }
+    .graph-node.disrupted rect { fill: #fff5f2; stroke: #d89a8e; }
+    .graph-node.alternative rect { fill: #f0f7f1; stroke: #91b39b; }
+    .graph-node.selected rect { stroke: #446c50; stroke-width: 3; }
+    .graph-node text { pointer-events: none; text-anchor: middle; fill: var(--text); }
+    .graph-node .graph-type { fill: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .08em; }
+    .graph-node .graph-label { font-size: 11px; font-weight: 650; }
+    .graph-node .graph-id { fill: var(--muted); font-size: 9px; }
     .path-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 10px 11px; border-radius: 7px; background: #fafbf9; border: 1px solid #edf0eb; font-size: 11px; }
     .node { color: var(--text); font-weight: 600; }
     .node-type { display: block; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
@@ -104,7 +133,7 @@
     .footnote { margin: 16px 2px 0; color: var(--muted); font-size: 10px; }
     [hidden] { display: none !important; }
     @media (max-width: 760px) { .topbar { padding: 0 18px; } main { padding: 23px 16px 36px; } .workflow { grid-template-columns: repeat(2, 1fr); } .content-grid { grid-template-columns: 1fr; } .proof { grid-column: auto; } .heading { align-items: start; } .proof-grid { grid-template-columns: 1fr; } .proof-aside { border-left: 0; border-top: 1px solid var(--border); padding: 14px 0 0; } }
-    @media (max-width: 520px) { .heading { display: block; } .api-link { display: inline-block; margin-top: 9px; } .setup, .scenario-top { align-items: stretch; flex-direction: column; } .setup-actions { align-items: start; flex-direction: column; } .analyze-form { flex-wrap: wrap; } input { flex: 1; min-width: 120px; } .summary-grid { gap: 7px; } .metric { padding: 12px; } .metric-value { font-size: 20px; } .metric-note { display: none; } .check-list { grid-template-columns: 1fr; } .demo-badge { font-size: 9px; padding: 4px 7px; } }
+    @media (max-width: 520px) { .heading { display: block; } .api-link { display: inline-block; margin-top: 9px; } .origin-notice { align-items: stretch; flex-direction: column; gap: 8px; } .setup, .scenario-top { align-items: stretch; flex-direction: column; } .setup-actions { align-items: start; flex-direction: column; } .analyze-form { flex-wrap: wrap; } input { flex: 1; min-width: 120px; } .summary-grid { gap: 7px; } .metric { padding: 12px; } .metric-value { font-size: 20px; } .metric-note { display: none; } .check-list { grid-template-columns: 1fr; } .demo-badge { font-size: 9px; padding: 4px 7px; } }
   </style>
 </head>
 <body data-docs-enabled="__DOCS_ENABLED__">
@@ -113,6 +142,10 @@
     <span class="demo-badge">SYNTHETIC DEMO</span>
   </nav>
   <main>
+    <section class="origin-notice" id="originNotice" role="alert" hidden>
+      <div><strong>Open the FastAPI-served dashboard</strong><p>This HTML file was opened directly. Its API requests need the dashboard and backend to share the FastAPI origin.</p></div>
+      <a id="servedDashboardLink" href="http://127.0.0.1:8000/">Open ResiliNet AI at 127.0.0.1:8000</a>
+    </section>
     <section class="heading">
       <div><h1>Supply Chain Recovery Intelligence</h1><p class="subtitle">Trace disruption impact across connected suppliers, components, factories and products.</p></div>
       <a class="api-link" href="/docs">API documentation ↗</a>
@@ -142,6 +175,14 @@
       <article class="card section-card" aria-labelledby="pathsTitle">
         <div class="section-head"><h2 id="pathsTitle">Affected supply-chain paths</h2><span class="count" id="pathsCount">Awaiting analysis</span></div>
         <div class="empty" id="pathsEmpty">Run an analysis to see verified Supplier → Component → Factory → Product paths.</div>
+        <div id="graphView" hidden>
+          <div class="graph-toolbar" aria-label="Graph controls">
+            <button type="button" id="graphReset">Reset selection</button><label for="graphZoom">Zoom</label><input class="graph-zoom" type="range" id="graphZoom" min="70" max="135" value="100" aria-label="Zoom graph">
+            <span class="count" id="graphHint">Select a node to highlight its direct connections.</span>
+          </div>
+          <div class="graph-canvas"><svg id="supplyGraph" viewBox="0 0 920 410" role="img" aria-label="Interactive graph of supply chain dependencies"></svg></div>
+          <div class="graph-legend" aria-label="Graph legend"><span class="legend-item"><span class="legend-dot disrupted"></span>Disrupted supplier</span><span class="legend-item"><span class="legend-dot"></span>Recorded dependency</span><span class="legend-item"><span class="legend-dot alternative"></span>Recorded alternative</span></div>
+        </div>
         <div class="path-list" id="pathList"></div>
       </article>
       <article class="card section-card" aria-labelledby="candidatesTitle">
@@ -162,14 +203,20 @@
   </main>
   <script>
     const $ = (id) => document.getElementById(id);
+    const dashboardUrl = "http://127.0.0.1:8000/";
+    const apiBase = window.location.protocol === "file:" ? null : window.location.origin;
+    const openedAsFile = apiBase === null;
     const setText = (id, value) => { $(id).textContent = value; };
     async function call(url, options) {
+      if (openedAsFile) throw new Error(`This dashboard is open as a local file. Open ${dashboardUrl} so API requests use the FastAPI origin.`);
+      const endpoint = new URL(url, `${apiBase}/`);
+      if (endpoint.origin !== apiBase) throw new Error("The dashboard only sends API requests to its own origin.");
       let response;
       try {
-        response = await fetch(url, options);
+        response = await fetch(endpoint, options);
       } catch (error) {
         if (error instanceof TypeError) {
-          throw new Error(`API connection failed from ${window.location.origin}. Open this dashboard at http://127.0.0.1:8000/ so it shares the FastAPI origin, and confirm Uvicorn is running.`);
+          throw new Error(`Could not reach the API at ${apiBase}. Open ${dashboardUrl} and confirm the ResiliNet API service is healthy.`);
         }
         throw error;
       }
@@ -177,9 +224,54 @@
       if (!response.ok) throw new Error(body.detail || `Request failed (${response.status})`);
       return body;
     }
+    if (openedAsFile) {
+      $("originNotice").hidden = false;
+      $("seed").disabled = true;
+      $("analyze").disabled = true;
+      setText("status", `Open the FastAPI-served dashboard at ${dashboardUrl}; this local HTML file cannot reach the API.`);
+    }
     function badge(text, kind) { const el = document.createElement("span"); el.className = `badge ${kind}`; el.textContent = text; return el; }
     function listItems(target, items) { const list = $(target); list.replaceChildren(); for (const item of items) { const li = document.createElement("li"); li.textContent = item; list.append(li); } }
     function setStep(active) { for (let i = 1; i <= 4; i++) $(`step${i}`).classList.toggle("active", i <= active); }
+    const svgNS = "http://www.w3.org/2000/svg";
+    let graphSelection = null;
+    function svgElement(tag, attributes = {}) { const element = document.createElementNS(svgNS, tag); for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, value); return element; }
+    function renderSupplyGraph(data) {
+      const svg = $("supplyGraph"); svg.replaceChildren(); graphSelection = null;
+      const nodes = new Map(); const edges = new Map(); const adjacency = new Map();
+      const addNode = node => { if (!nodes.has(node.id)) nodes.set(node.id, { ...node, connections: new Set() }); };
+      const addEdge = (from, to, kind = "dependency") => { const key = `${from}->${to}`; if (!edges.has(key)) edges.set(key, { from, to, kind }); nodes.get(from)?.connections.add(to); nodes.get(to)?.connections.add(from); };
+      for (const path of data.affected_paths) {
+        path.forEach(addNode);
+        for (let i = 0; i < path.length - 1; i++) addEdge(path[i].id, path[i + 1].id);
+      }
+      for (const candidate of data.candidate_evaluations) {
+        const supplier = { type: "Supplier", id: candidate.supplier_id, name: candidate.supplier_name, alternative: true };
+        const component = { type: "Component", id: candidate.component_id, name: candidate.component_name };
+        addNode(supplier); addNode(component); addEdge(supplier.id, component.id, "alternative");
+      }
+      for (const node of nodes.values()) adjacency.set(node.id, node.connections);
+      const typeOrder = ["Supplier", "Component", "Factory", "Product"];
+      const x = { Supplier: 125, Component: 350, Factory: 585, Product: 810 };
+      const groups = Object.fromEntries(typeOrder.map(type => [type, [...nodes.values()].filter(node => node.type === type).sort((a, b) => a.id.localeCompare(b.id))]));
+      const yFor = new Map();
+      for (const type of typeOrder) { const group = groups[type]; group.forEach((node, index) => yFor.set(node.id, 60 + (index + 1) * (290 / (group.length + 1)))); }
+      const defs = svgElement("defs"); const marker = svgElement("marker", { id: "arrow", viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" }); marker.append(svgElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#8b9c89" })); defs.append(marker); svg.append(defs);
+      const relationshipFor = (from, to, kind) => kind === "alternative" ? "SUPPLIES · ALT" : ({ Supplier: "SUPPLIES", Component: "USED_BY", Factory: "PRODUCES" }[nodes.get(from)?.type] || "RELATED");
+      for (const edge of edges.values()) { const from = nodes.get(edge.from); const to = nodes.get(edge.to); if (!from || !to) continue; const x1 = x[from.type] + 77; const y1 = yFor.get(from.id); const x2 = x[to.type] - 77; const y2 = yFor.get(to.id); const line = svgElement("line", { x1, y1, x2, y2, class: `graph-edge${edge.kind === "alternative" ? " alternative" : ""}`, "data-from": edge.from, "data-to": edge.to }); svg.append(line); const label = svgElement("text", { x: (x1 + x2) / 2, y: (y1 + y2) / 2 - 7, class: `graph-edge-label${edge.kind === "alternative" ? " alternative" : ""}`, "data-from": edge.from, "data-to": edge.to }); label.textContent = relationshipFor(edge.from, edge.to, edge.kind); svg.append(label); }
+      for (const type of typeOrder) for (const node of groups[type]) {
+        const group = svgElement("g", { class: `graph-node ${type.toLowerCase()}${node.id === data.disruption.supplier_id ? " disrupted" : ""}${node.alternative ? " alternative" : ""}`, transform: `translate(${x[type] - 77}, ${yFor.get(node.id) - 25})`, tabindex: "0", role: "button", "aria-label": `${type}: ${node.name} (${node.id})`, "data-id": node.id });
+        group.append(svgElement("rect", { width: "154", height: "50" }));
+        const typeText = svgElement("text", { x: "77", y: "13", class: "graph-type" }); typeText.textContent = type.toUpperCase(); group.append(typeText);
+        const label = svgElement("text", { x: "77", y: "29", class: "graph-label" }); label.textContent = node.name.length > 22 ? `${node.name.slice(0, 20)}…` : node.name; group.append(label);
+        const idText = svgElement("text", { x: "77", y: "43", class: "graph-id" }); idText.textContent = node.id; group.append(idText);
+        const select = () => { graphSelection = node.id; for (const element of svg.querySelectorAll(".graph-node")) { const connected = element.dataset.id === node.id || adjacency.get(node.id)?.has(element.dataset.id); element.classList.toggle("is-dim", !connected); element.classList.toggle("selected", element.dataset.id === node.id); } for (const edgeElement of svg.querySelectorAll(".graph-edge")) { const connected = edgeElement.dataset.from === node.id || edgeElement.dataset.to === node.id; edgeElement.classList.toggle("is-dim", !connected); } setText("graphHint", `${node.type} · ${node.name} · direct connections highlighted`); };
+        group.addEventListener("click", select); group.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); select(); } }); svg.append(group);
+      }
+      $("graphView").hidden = nodes.size === 0;
+      $("graphReset").onclick = () => { graphSelection = null; for (const element of svg.querySelectorAll(".is-dim, .selected")) element.classList.remove("is-dim", "selected"); setText("graphHint", "Select a node to highlight its direct connections."); };
+      $("graphZoom").oninput = event => { const scale = Number(event.target.value) / 100; const width = 920 / scale; const height = 410 / scale; svg.setAttribute("viewBox", `${(920 - width) / 2} ${(410 - height) / 2} ${width} ${height}`); };
+    }
     $("seed").addEventListener("click", async () => {
       const button = $("seed"); button.disabled = true; setStep(1); $("seedStatus").classList.remove("error"); setText("seedStatus", "Preparing synthetic graph records…");
       try { const data = await call("/demo/initialize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirm_synthetic: true }) }); setText("seedStatus", `Ready · ${data.suppliers} suppliers, ${data.components} components, ${data.relationships} relationships.`); setStep(2); }
@@ -194,6 +286,7 @@
       finally { button.disabled = false; }
     });
     function render(data) {
+      renderSupplyGraph(data);
       const products = new Set(data.affected_paths.map(path => path.find(node => node.type === "Product")?.id).filter(Boolean));
       setText("affectedCount", String(products.size)); setText("candidateCount", String(data.candidate_evaluations.length)); setText("decisionValue", data.outcome.replaceAll("_", " ")); setText("decisionNote", data.recommendations.length ? `${data.recommendations.length} component recommendation(s)` : "No unsupported recommendation issued"); $("summary").hidden = false;
       setText("pathsCount", `${data.affected_paths.length} recorded path(s)`); $("pathList").replaceChildren(); $("pathsEmpty").hidden = data.affected_paths.length > 0;

@@ -2,7 +2,7 @@
 
 **Supply Chain Recovery Intelligence** — trace supplier disruptions across a connected supply graph, compare graph-backed alternatives, and show the evidence behind a deterministic recovery decision.
 
-Hackathon: WeMakeDevs × FalkorDB Graph Hacks · **Track 1 — Agents That Act on Connected Data**
+Hackathon: WeMakeDevs × FalkorDB Graph Hacks · **Track 01 — Agents That Act on Connected Data**
 
 ## Problem and intended use
 
@@ -11,11 +11,12 @@ Supply-chain teams need to understand which components, factories, and products 
 ## What is implemented
 
 - FastAPI serves the dashboard and API from one origin.
+- The dashboard renders an interactive SVG supply-chain graph from the recovery API’s live graph-derived paths and alternative-supplier records; selecting a node highlights its direct relationships and the zoom control adjusts the view.
 - FalkorDB is the source of truth for supplier impact paths and candidate-to-component compatibility.
 - The recovery evaluator checks qualification, capacity, lead time, risk, and compatibility; it reports PASS, FAIL, or UNKNOWN with supporting reasons.
 - The Recovery Decision Proof includes graph paths, missing information, rejection reasons, ranking method, and recommendations where the evidence supports one.
 - Demo graph initialization uses additive, idempotent `MERGE` queries.
-- There is no LLM, RAG, autonomous purchasing, or production recovery engine. Decisions are deterministic demonstration rules.
+- This is a deterministic, graph-backed recovery analysis prototype, not an autonomous AI agent. It has no LLM, RAG, purchasing action, or production recovery engine; decisions follow documented demonstration rules.
 
 ## Architecture
 
@@ -117,7 +118,7 @@ Start the API in another terminal. The Windows-host process uses `localhost` fro
 .\.venv\Scripts\python.exe -m uvicorn resilinet.main:app --app-dir src --reload --host 127.0.0.1 --port 8000
 ```
 
-Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/). Use this FastAPI-served page so its relative API URLs share the backend origin. Check readiness at [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health). `{"status":"ok","graph":"connected"}` means the configured graph answered the readiness query.
+Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/). Do not open `src/resilinet/static/index.html` directly from File Explorer: API calls require a same-origin FastAPI page. If opened as a file, the dashboard now shows a link to the served page and disables API actions. Check readiness at [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health). `{"status":"ok","graph":"connected"}` means the configured graph answered the readiness query.
 
 ### Optional containerized API
 
@@ -129,7 +130,7 @@ docker compose --profile containerized-api ps
 docker compose --profile containerized-api logs api
 ```
 
-Inside Compose, the API uses `FALKORDB_HOST=falkordb`; the host-published API and FalkorDB ports are loopback-only. To use another host API port, set `$env:API_PORT='8001'` before `up`. The optional API image and Compose profile were built and smoke-tested on `127.0.0.1:8001` while the existing host API remained on port 8000. The container returned healthy, initialized the synthetic graph, and completed a recovery request through `FALKORDB_HOST=falkordb`. The temporary API container was stopped after the check; the existing FalkorDB container and named volume remain running.
+Inside Compose, the API uses `FALKORDB_HOST=falkordb`; the host-published API and FalkorDB ports are loopback-only. The containerized API was built and verified on `127.0.0.1:8000`, including health, synthetic graph initialization, impact analysis, and recovery requests. To use another host API port, set `$env:API_PORT='8001'` before `up`; the API still listens on port 8000 inside Compose.
 
 Stop services without deleting data:
 
@@ -179,7 +180,7 @@ try { .\.venv\Scripts\python.exe -m pytest -q -m integration }
 finally { Remove-Item Env:RUN_FALKORDB_INTEGRATION -ErrorAction SilentlyContinue }
 ```
 
-Latest verification for this readiness pass: unit tests **36 passed**; FalkorDB integration tests **2 passed**. Pytest reports a non-blocking Starlette/httpx deprecation warning from the installed test-client stack.
+The API service currently uses `127.0.0.1:8000` in the containerized setup, and FalkorDB is on loopback port 6379. The dashboard root and API requests share the same origin; no CORS exception is needed. See [the compliance audit](docs/competition-compliance.md) for verification and remaining submission requirements.
 
 ## Configuration and secret handling
 
@@ -189,7 +190,7 @@ Settings come from environment variables or the ignored local `.env`: `APP_ENV`,
 
 1. Start FalkorDB and the API using the local commands above; confirm `/health` is successful.
 2. Open the dashboard at `http://127.0.0.1:8000/` and initialize the labelled synthetic demo graph.
-3. Select disrupted supplier `SUP-001` and analyze. The app queries the real graph for Supplier → Component → Factory → Product dependency paths.
+3. Select disrupted supplier `SUP-001` and analyze. The app queries the real graph for Supplier → Component → Factory → Product dependency paths. Inspect the interactive graph, select nodes to highlight connections, and adjust zoom; the textual evidence paths remain available below it.
 4. Compare the recorded alternatives. Show `SUP-002`’s passing qualification, capacity, lead-time, risk, and compatibility checks; point out that missing `SUP-003` fields remain UNKNOWN.
 5. Review the Recovery Decision Proof and explain the ranking formula and tie-breaker.
 6. In `/docs` or FalkorDB Browser, show the fixed Cypher path query. Explain that FalkorDB determines which entities and compatible alternatives exist; the recovery evaluator cannot recommend a supplier without those graph edges.
@@ -211,9 +212,10 @@ Record this from the running application and real database. Do not use a static 
 - [x] Existing application and graph workflow preserved; no database reset.
 - [x] README documents setup, graph model, Cypher, architecture, limitations, and demo.
 - [x] Complete local setup instructions verified; no live deployment is claimed.
-- [x] Selected track documented: **Agents That Act on Connected Data**.
+- [x] Target track documented: **Track 01 — Agents That Act on Connected Data**.
+- [x] Interactive graph visualization renders graph-derived paths and alternatives from the recovery API.
 - [x] AI coding assistant usage disclosed below.
-- [ ] Public source-code repository — local commit created; GitHub remote/repository not created.
+- [ ] Public source-code repository updated with the project — the GitHub repository exists; its initial commit is joined to local history, but the project commits have not been pushed.
 - [ ] Demo video — script prepared; recording not yet created.
 - [ ] Submission form — submit repository URL, video URL, and selected track before the hackathon deadline.
 

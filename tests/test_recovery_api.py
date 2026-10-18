@@ -29,6 +29,18 @@ def test_dashboard_route_serves_existing_demo_page():
     assert 'data-docs-enabled="false"' in main._dashboard_html("production")
     assert 'call("/demo/initialize"' in response.text
     assert 'call("/recovery/scenarios"' in response.text
+    assert 'id="supplyGraph"' in response.text
+    assert "function renderSupplyGraph(data)" in response.text
+    assert "data.affected_paths" in response.text
+    assert "data.candidate_evaluations" in response.text
+    assert 'id="graphZoom"' in response.text
+    assert 'class: `graph-edge-label' in response.text
+    assert '"USED_BY"' in response.text
+    assert 'const apiBase = window.location.protocol === "file:" ? null : window.location.origin;' in response.text
+    assert 'id="servedDashboardLink" href="http://127.0.0.1:8000/"' in response.text
+    assert 'This dashboard is open as a local file.' in response.text
+    assert 'fetch(endpoint, options)' in response.text
+    assert 'endpoint.origin !== apiBase' in response.text
     assert 'confirm_synthetic: true' in response.text
     assert 'disrupted_supplier_id:' in response.text
 
