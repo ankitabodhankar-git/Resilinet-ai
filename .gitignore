@@ -1,22 +1,65 @@
+# Python bytecode and native build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+.Python
+
+# Environment files and local credentials
 .env
 .env.*
 !.env.example
 !.env.sample
 !.env.template
+.envrc
+.pypirc
+.streamlit/secrets.toml
+
+# Virtual environments and local package managers
 .venv/
 venv/
-__pycache__/
-*.py[cod]
+env/
+ENV/
+env.bak/
+venv.bak/
+.pixi/
+__pypackages__/
+
+# Tests, coverage, and type-checker caches
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-.coverage
+.pyre/
+.pytype/
+.hypothesis/
+.coverage*
 htmlcov/
-dist/
+coverage.xml
+nosetests.xml
+
+# Packaging and build outputs
 build/
+dist/
 *.egg-info/
+*.egg
+.eggs/
+develop-eggs/
+sdist/
+wheels/
+*.manifest
+*.spec
+
+# Editor and operating-system files
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+.spyderproject
+.spyproject
+.ropeproject
+
+# Local service and migration state
+*.rdb
+*.aof
 /.falkordb-migration-backup/
