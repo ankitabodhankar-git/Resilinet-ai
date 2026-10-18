@@ -91,8 +91,6 @@ The demonstration score is `100 - lead_time_days - (10 × risk_score)`. Higher s
 
 
 
-Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/). 
-
 ## How to Run Locally
 
 Requirements: Python and Docker Desktop.
