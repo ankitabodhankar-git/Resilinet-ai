@@ -8,6 +8,14 @@ Hackathon: WeMakeDevs × FalkorDB Graph Hacks · **Track 01 — Agents That Act 
 
 Supply-chain teams need to understand which components, factories, and products depend on a disrupted supplier, then assess recorded alternatives against operational constraints. ResiliNet AI is a local prototype for procurement, operations, and supply-risk analysts to explore that workflow using a property graph. All included names, relationships, and capability values are synthetic demonstration data; they do not describe real organizations or validated procurement rules.
 
+
+
+## 🎬 Demo Video
+
+Watch the ResiliNet AI demo to see how it works.
+
+[▶️ Watch Demo Video](sha256:c36daa1ca70efb815406ba76395010c2dfc5614440042c2d658acfe058eda209)
+
 ## What is implemented
 
 - FastAPI serves the dashboard and API from one origin.
