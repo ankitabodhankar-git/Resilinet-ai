@@ -14,7 +14,7 @@ Supply-chain teams need to understand which components, factories, and products 
 
 Watch the ResiliNet AI demo to see how it works.
 
-[▶️ Watch Demo Video](sha256:c36daa1ca70efb815406ba76395010c2dfc5614440042c2d658acfe058eda209)
+[▶️ Watch Demo Video](sha256:[c36daa1ca70efb815406ba76395010c2dfc5614440042c2d658acfe058eda209](https://github.com/ankitabodhankar-git/Resilinet-ai/releases/download/Demo_vedio/ResiliNet.AI.-.Demo.mp4))
 
 ## What is implemented
 
